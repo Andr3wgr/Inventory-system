@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" fx:id="mainForm" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="595.0" prefWidth="937.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CustomerPageController">
+   <effect>
+      <Blend />
+   </effect>
+   <children>
+      <BorderPane layoutX="31.0" layoutY="69.0" prefHeight="429.0" prefWidth="916.0">
+         <bottom>
+            <HBox alignment="CENTER_RIGHT" prefHeight="55.0" prefWidth="931.0" spacing="60.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button mnemonicParsing="false" text="View Appointments" />
+                  <Button mnemonicParsing="false" text="Add" textAlignment="CENTER" />
+                  <Button mnemonicParsing="false" text="Modify" />
+                  <Button alignment="BOTTOM_RIGHT" mnemonicParsing="false" text="Delete" />
+               </children>
+               <padding>
+                  <Insets right="50.0" />
+               </padding>
+            </HBox>
+         </bottom>
+         <center>
+            <TableView maxHeight="-Infinity" maxWidth="865.0" prefHeight="335.0" prefWidth="782.0" BorderPane.alignment="CENTER">
+               <columns>
+                  <TableColumn prefWidth="82.0" text="Customer ID" />
+                  <TableColumn prefWidth="165.0" text="Customer Name" />
+                  <TableColumn prefWidth="312.0" text="Address" />
+                  <TableColumn prefWidth="101.0" text="Postal Code" />
+                  <TableColumn prefWidth="115.0" text="Phone" />
+                  <TableColumn prefWidth="89.0" text="Division ID" />
+               </columns>
+            </TableView>
+         </center>
+         <top>
+            <HBox prefHeight="22.0" prefWidth="931.0" spacing="600.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label alignment="BOTTOM_LEFT" prefHeight="77.0" prefWidth="134.0" text="Customers">
+                     <font>
+                        <Font size="18.0" />
+                     </font>
+                     <padding>
+                        <Insets left="45.0" />
+                     </padding>
+                  </Label>
+               </children>
+            </HBox>
+         </top>
+         <padding>
+            <Insets left="-30.0" />
+         </padding>
+      </BorderPane>
+      <Button layoutX="15.0" layoutY="14.0" mnemonicParsing="false" text="All Appointments" />
+   </children>
+</AnchorPane>

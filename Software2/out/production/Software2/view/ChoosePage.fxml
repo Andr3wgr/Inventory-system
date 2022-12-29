@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.ChoosePageController">
+   <children>
+      <BorderPane prefHeight="384.0" prefWidth="639.0">
+         <center>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="80.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button mnemonicParsing="false" prefHeight="85.0" prefWidth="166.0" text="To Customer List" />
+                  <Button mnemonicParsing="false" prefHeight="78.0" prefWidth="150.0" text="To Appointments List" />
+               </children>
+            </HBox>
+         </center>
+      </BorderPane>
+   </children>
+</AnchorPane>

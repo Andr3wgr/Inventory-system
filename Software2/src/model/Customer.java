@@ -20,15 +20,25 @@ public class Customer {
     private String customerAddress;
     private String customerPostalCode;
     private String customerPhone;
-    private String customerDivisionId;
+    private String customerDivision;
+    private String customerCountryId;
     
-    public Customer (String customerId, String customerName, String customerAddress, String customerPostalCode, String customerPhone, String customerDivisionId){
+    public Customer (String customerId, String customerName, String customerAddress, String customerPostalCode, String customerPhone, String customerDivision, String customerCountryId){
         this.customerId = customerId;
         this.customerName = customerName;
         this.customerAddress = customerAddress;
         this.customerPostalCode = customerPostalCode;
         this.customerPhone = customerPhone;
-        this.customerDivisionId = customerDivisionId;
+        this.customerDivision = customerDivision;
+        this.customerCountryId = customerCountryId;
+    }
+
+    public String getCustomerCountryId() {
+        return customerCountryId;
+    }
+
+    public void setCustomerCountryId(String customerCountryId) {
+        this.customerCountryId = customerCountryId;
     }
 
     public static ObservableList<Customer> getCustomers() {
@@ -84,12 +94,12 @@ public class Customer {
         this.customerPhone = customerPhone;
     }
 
-    public String getCustomerDivisionId() {
-        return customerDivisionId;
+    public String getCustomerDivision() {
+        return customerDivision;
     }
 
-    public void setCustomerDivisionId(String customerDivisionId) {
-        this.customerDivisionId = customerDivisionId;
+    public void setCustomerDivision(String customerDivisionId) {
+        this.customerDivision = customerDivisionId;
     }
     
 }

@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" fx:id="mainForm" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="595.0" prefWidth="937.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CustomerPageController">
+<AnchorPane id="AnchorPane" fx:id="mainForm" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="595.0" prefWidth="1036.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CustomerPageController">
    <effect>
       <Blend />
    </effect>
@@ -30,18 +30,6 @@
                </padding>
             </HBox>
          </bottom>
-         <center>
-            <TableView fx:id="customerTableView" maxHeight="-Infinity" maxWidth="865.0" prefHeight="335.0" prefWidth="782.0" BorderPane.alignment="CENTER">
-               <columns>
-                  <TableColumn fx:id="customerId" prefWidth="82.0" text="Customer ID" />
-                  <TableColumn fx:id="customerName" prefWidth="165.0" text="Customer Name" />
-                  <TableColumn fx:id="customerAddress" prefWidth="312.0" text="Address" />
-                  <TableColumn fx:id="customerPostalCode" prefWidth="101.0" text="Postal Code" />
-                  <TableColumn fx:id="customerPhone" prefWidth="115.0" text="Phone" />
-                  <TableColumn fx:id="customerDivisionId" prefWidth="89.0" text="Division ID" />
-               </columns>
-            </TableView>
-         </center>
          <top>
             <HBox prefHeight="22.0" prefWidth="931.0" spacing="600.0" BorderPane.alignment="CENTER">
                <children>
@@ -59,6 +47,22 @@
          <padding>
             <Insets left="-30.0" />
          </padding>
+         <right>
+            <TableView fx:id="customerTableView" maxHeight="-Infinity" maxWidth="996.0" prefHeight="335.0" prefWidth="939.0" BorderPane.alignment="CENTER">
+               <columns>
+                  <TableColumn fx:id="customerId" prefWidth="82.0" text="Customer ID" />
+                  <TableColumn fx:id="customerName" prefWidth="165.0" text="Customer Name" />
+                  <TableColumn fx:id="customerAddress" prefWidth="301.0" text="Address" />
+                  <TableColumn fx:id="customerPostalCode" prefWidth="106.0" text="Postal Code" />
+                  <TableColumn fx:id="customerPhone" prefWidth="115.0" text="Phone" />
+                  <TableColumn fx:id="customerDivision" prefWidth="98.0" text="Division" />
+                  <TableColumn fx:id="customerCountryId" prefWidth="72.0" text="Country  ID" />
+               </columns>
+               <BorderPane.margin>
+                  <Insets left="40.0" />
+               </BorderPane.margin>
+            </TableView>
+         </right>
       </BorderPane>
       <Button layoutX="15.0" layoutY="14.0" mnemonicParsing="false" onAction="#toAppointmentsPage" text="All Appointments" />
    </children>

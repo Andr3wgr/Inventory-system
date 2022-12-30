@@ -36,7 +36,9 @@ public class CustomerPageController implements Initializable {
     @FXML
     private TableColumn<Customer, String> customerAddress;
     @FXML
-    private TableColumn<Customer, Integer> customerDivisionId;
+    private TableColumn<Customer, String> customerCountryId;
+    @FXML
+    private TableColumn<Customer, Integer> customerDivision;
     @FXML
     private TableColumn<Customer, Integer> customerId;
     @FXML
@@ -56,7 +58,8 @@ public class CustomerPageController implements Initializable {
         try {
             Customer.clear();
             localDatabase.openConnection();
-            localDatabase.populateCustomerTable("SELECT * FROM client_schedule.customers");
+            localDatabase.populateCustomerTable("SELECT customers.*, first_level_divisions.Country_ID, first_level_divisions.Division from client_schedule.customers \n" +
+"inner join first_level_divisions on customers.Division_ID = first_level_divisions.Division_ID;");
             
             customerTableView.setItems(Customer.getCustomers());
             customerId.setCellValueFactory(new PropertyValueFactory<>("customerId"));
@@ -64,7 +67,8 @@ public class CustomerPageController implements Initializable {
             customerAddress.setCellValueFactory(new PropertyValueFactory<>("customerAddress"));
             customerPostalCode.setCellValueFactory(new PropertyValueFactory<>("customerPostalCode"));
             customerPhone.setCellValueFactory(new PropertyValueFactory<>("customerPhone"));
-            customerDivisionId.setCellValueFactory(new PropertyValueFactory<>("customerDivisionId"));
+            customerDivision.setCellValueFactory(new PropertyValueFactory<>("customerDivision"));
+            customerCountryId.setCellValueFactory(new PropertyValueFactory<>("customerCountryId"));
             
             localDatabase.closeConnection();
             

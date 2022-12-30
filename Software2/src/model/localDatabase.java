@@ -34,8 +34,9 @@ public class localDatabase {
             String address = myrs.getString("Address");
             String postalCode = myrs.getString("Postal_Code");
             String phone = myrs.getString("Phone");
-            String divisionId = myrs.getString("Division_ID");
-            model.Customer.addCustomer(new Customer(id,name,address,postalCode,phone,divisionId));
+            String division = myrs.getString("Division");
+            String countryId = myrs.getString("Country_ID");
+            model.Customer.addCustomer(new Customer(id,name,address,postalCode,phone,division,countryId));
         }      
     }
     public static void populateAppointmentTable(String string) throws SQLException{
@@ -47,8 +48,10 @@ public class localDatabase {
             String title = myrs.getString("Title");
             String description = myrs.getString("Description");
             String location = myrs.getString("Location");
-            String contact = myrs.getString("Create_Date");
+            String contact = myrs.getString("Contact_Name");
             String type = myrs.getString("Type");
+            
+            //function to convert start and end dates from utc to local time
             String start = myrs.getString("Start");
             String end = myrs.getString("End");
             String custid = myrs.getString("Customer_ID");

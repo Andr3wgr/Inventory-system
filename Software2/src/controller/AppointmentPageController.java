@@ -32,34 +32,35 @@ import model.localDatabase;
 public class AppointmentPageController implements Initializable {
 
     @FXML
-    private TableColumn<Appointment, ?> appointmentContact;
+    private TableColumn<Appointment, String> appointmentContact;
     @FXML
-    private TableColumn<Appointment, ?> appointmentDescription;
+    private TableColumn<Appointment, String> appointmentDescription;
     @FXML
-    private TableColumn<Appointment, ?> appointmentId;
+    private TableColumn<Appointment, String> appointmentId;
     @FXML
-    private TableColumn<Appointment, ?> appointmentLocation;
+    private TableColumn<Appointment, String> appointmentLocation;
     @FXML
-    private TableColumn<Appointment, ?> appointmentTitle;
+    private TableColumn<Appointment, String> appointmentTitle;
     @FXML
-    private TableColumn<Appointment, ?> appointmentType;
+    private TableColumn<Appointment, String> appointmentType;
     @FXML
     private TableView<Appointment> appointmentsTableView;
     @FXML
-    private TableColumn<Appointment, ?> customerId;
+    private TableColumn<Appointment, String> customerId;
     @FXML
-    private TableColumn<Appointment, ?> endDate;
+    private TableColumn<Appointment, String> endDate;
     @FXML
-    private TableColumn<Appointment, ?> startDate;
+    private TableColumn<Appointment, String> startDate;
     @FXML
-    private TableColumn<Appointment, ?> userId;
+    private TableColumn<Appointment, String> userId;
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         try {
             Appointment.clear();
             localDatabase.openConnection();
-            localDatabase.populateAppointmentTable("SELECT * FROM client_schedule.appointments");
+            localDatabase.populateAppointmentTable("SELECT appointments.*, contacts.Contact_Name from client_schedule.appointments \n" +
+                "inner join contacts on appointments.Contact_ID = contacts.Contact_ID;");
             
             appointmentsTableView.setItems(Appointment.getAppointments());
             appointmentId.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));

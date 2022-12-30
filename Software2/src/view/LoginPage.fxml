@@ -29,10 +29,13 @@
                     <children>
                         <VBox prefHeight="344.0" prefWidth="410.0">
                             <children>
-                                <Label fx:id="usernameLb" text="Label">
+                                <Label fx:id="usernameLb" prefHeight="30.0" prefWidth="168.0" text="Label">
                                     <font>
                                         <Font size="20.0" />
                                     </font>
+                           <VBox.margin>
+                              <Insets left="-30.0" />
+                           </VBox.margin>
                                 </Label>
                                 <Label fx:id="passwordLb" text="Label">
                                     <font>
@@ -41,6 +44,9 @@
                                     <padding>
                                         <Insets top="20.0" />
                                     </padding>
+                           <VBox.margin>
+                              <Insets left="-30.0" />
+                           </VBox.margin>
                                 </Label>
                             </children>
                             <padding>
@@ -51,10 +57,13 @@
                             <children>
                                 <TextField fx:id="usernameTxt" />
                                 <PasswordField fx:id="passwordTxt" />
-                                <Button mnemonicParsing="false" onAction="#login"  text="Button">
+                                <Button mnemonicParsing="false" onAction="#login" prefHeight="25.0" prefWidth="84.0">
                                     <VBox.margin>
-                                        <Insets left="100.0" />
+                                        <Insets left="85.0" />
                                     </VBox.margin>
+                           <graphic>
+                              <Label fx:id="loginBt" text="Label" />
+                           </graphic>
                                 </Button>
                             </children>
                             <padding>

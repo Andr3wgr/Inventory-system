@@ -4,12 +4,14 @@
  */
 package controller;
 
+import java.awt.Button;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -33,6 +35,8 @@ public class LoginPageController implements Initializable {
     @FXML
     private AnchorPane AnchorPane;
     @FXML
+    private Label loginBt;
+    @FXML
     private Label titleLb;
     @FXML
     private Label locationLb;
@@ -51,6 +55,20 @@ public class LoginPageController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        Locale currentLocale = Locale.getDefault();
+        locationLb.setText(currentLocale.getDisplayCountry());
+        if(String.valueOf(currentLocale.getDisplayLanguage())=="French"){
+            titleLb.setText("Connexion");
+            usernameLb.setText("Nom d'utilisateur");
+            passwordLb.setText("Mot de passe");
+            loginBt.setText("Connexion");
+        }else{
+            titleLb.setText("Log-In");
+            usernameLb.setText("Username");
+            passwordLb.setText("Password");
+            loginBt.setText("Log-In");
+            
+        }
         
     } 
 

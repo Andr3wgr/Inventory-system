@@ -5,6 +5,8 @@
 package model;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import javafx.collections.ObservableList;
 
 
@@ -17,6 +19,7 @@ public class localDatabase {
     private static String user = "sqlUser";
     private static String pass = "Passw0rd!";
     private static Connection database;
+   
     public static void openConnection() throws SQLException{
         database = DriverManager.getConnection(url, user, pass);
     }
@@ -61,4 +64,81 @@ public class localDatabase {
                     ,contact,type,start,end,custid,userid));
         }      
     }
+    public static boolean login(String user, String pass) throws SQLException{
+        Statement mystmt = database.createStatement();
+        ResultSet myrs = mystmt.executeQuery("SELECT * FROM client_schedule.users");     
+        while(myrs.next()){
+            if(myrs.getString("User_Name").equals(user)){
+                if(myrs.getString("Password").equals(pass)){
+                    //add to login history
+                    return true;
+                }
+            }
+        }     
+        return false;
+    }
+    public static String[] returnDivisions(int countryNum) throws SQLException{
+        openConnection();
+        String[] divisions = {};
+        Statement mystmt = database.createStatement();
+        ResultSet myrs = mystmt.executeQuery("SELECT Division FROM client_schedule.first_level_divisions where Country_ID = " + countryNum);  
+        while(myrs.next()){
+           ArrayList<String> divisionsList = new ArrayList<String>(Arrays.asList(divisions));
+           divisionsList.add(myrs.getString("Division"));
+           divisions = divisionsList.toArray(divisions);
+        }
+        closeConnection();
+        return divisions;
+    }
+    public static void addCustomer(String id,String name,String address,String postal,String phone,String division) throws SQLException{
+        openConnection();
+        Statement getdivisionId = database.createStatement();
+        ResultSet divisionId = getdivisionId.executeQuery("SELECT Division_ID FROM client_schedule.first_level_divisions where Division = '"+division+"'");
+        int divisionInt = 0;
+        while(divisionId.next()){
+            divisionInt = Integer.parseInt(divisionId.getString("Division_ID"));
+        }
+        Statement insert = database.createStatement();
+        insert.executeUpdate("insert into client_schedule.customers(Customer_ID,Customer_Name,Address,Postal_Code,Phone,Division_ID)"
+                + " values('"+id+"','"+name+"','"+address+"','"+postal+"','"+phone+"',"+divisionInt+")"); 
+        closeConnection();
+    }
+    
+    public static void updateCustomer(String id, String name, String address, String postal, String phone, String division) throws SQLException {
+        openConnection();
+        Statement getdivisionId = database.createStatement();
+        ResultSet divisionId = getdivisionId.executeQuery("SELECT Division_ID FROM client_schedule.first_level_divisions where Division = '"+division+"'");
+        int divisionInt = 0;
+        while(divisionId.next()){
+            divisionInt = Integer.parseInt(divisionId.getString("Division_ID"));
+        }
+        Statement update = database.createStatement();
+        update.executeUpdate("update client_schedule.customers set Customer_ID ='"+id+"',Customer_Name ='"+name+"',Address = '"+address+"',Postal_Code = '"+postal+"'"+","
+                + "Phone ='"+phone+"',Division_ID = "+divisionInt+" where Customer_ID ='"+id+"'");
+        closeConnection();
+    }
+    
+    public static void deleteCustomer(Customer delete) throws SQLException {
+        openConnection();
+        int customerId = Integer.parseInt(delete.getCustomerId());
+        Statement deleteCustomer = database.createStatement();
+        deleteCustomer.executeUpdate("Delete FROM client_schedule.customers where Customer_ID = "+customerId);
+        closeConnection();
+    }
+
+    public static int getNextId() throws SQLException {
+        openConnection();
+        Statement mystmt = database.createStatement();
+        ResultSet myrs = mystmt.executeQuery("SELECT Customer_ID FROM client_schedule.customers");  
+        int lastId = 0;
+        while(myrs.next()){
+            if(lastId<Integer.parseInt(myrs.getString("Customer_ID"))){
+            lastId = Integer.parseInt(myrs.getString("Customer_ID"));
+            }
+        }
+        closeConnection(); 
+        return lastId+1;       
+    }
+
+
 }

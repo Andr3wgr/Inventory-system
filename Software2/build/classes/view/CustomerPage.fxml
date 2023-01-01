@@ -21,9 +21,9 @@
             <HBox alignment="CENTER_RIGHT" prefHeight="55.0" prefWidth="931.0" spacing="60.0" BorderPane.alignment="CENTER">
                <children>
                   <Button mnemonicParsing="false" text="View Appointments" />
-                  <Button mnemonicParsing="false" text="Add" textAlignment="CENTER" />
-                  <Button mnemonicParsing="false" text="Modify" />
-                  <Button alignment="BOTTOM_RIGHT" mnemonicParsing="false" text="Delete" />
+                  <Button mnemonicParsing="false" onAction="#toAddCustomer" text="Add" textAlignment="CENTER" />
+                  <Button mnemonicParsing="false" onAction="#toUpdateCustomerPage" text="Update" />
+                  <Button alignment="BOTTOM_RIGHT" mnemonicParsing="false" onAction="#deleteCustomer" text="Delete" />
                </children>
                <padding>
                   <Insets right="50.0" />

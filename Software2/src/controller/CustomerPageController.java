@@ -18,6 +18,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -83,9 +84,59 @@ public class CustomerPageController implements Initializable {
            Scene scene = new Scene(root);
            stage.setScene(scene);
            stage.show();
-
     }
-
-
+    public void toAddCustomer(javafx.event.ActionEvent event) throws IOException {
+           Parent root = FXMLLoader.load(getClass().getResource("/view/AddCustomer.fxml"));
+           Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+           Scene scene = new Scene(root);
+           stage.setScene(scene);
+           stage.show();
+    }
+    public void toUpdateCustomerPage(javafx.event.ActionEvent event) throws IOException {
+           Customer update = customerTableView.getSelectionModel().getSelectedItem();
+           if(update == null){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("ERROR");
+                alert.setContentText("No Customer Selected");
+                alert.showAndWait();
+           }
+           UpdateCustomerController.passCustomer(update); 
+           Parent root = FXMLLoader.load(getClass().getResource("/view/UpdateCustomer.fxml"));
+           Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+           Scene scene = new Scene(root);
+           stage.setScene(scene);
+           stage.show();
     
+           
+    }
+    public void deleteCustomer(javafx.event.ActionEvent event) throws SQLException, IOException{
+        Customer delete = customerTableView.getSelectionModel().getSelectedItem();
+        if(delete == null){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("ERROR");
+                alert.setContentText("No Customer Selected");
+                alert.showAndWait();
+        }
+        
+        /*if (delete != null && delete.getAllAssociatedParts().isEmpty()){
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Are You sure You want to Delete this Product?");
+                Optional<ButtonType> result = alert.showAndWait();
+                if(result.isPresent() && result.get()==ButtonType.OK){
+                    Inventory.deleteProduct(delete);       
+                }
+            }if(delete != null && !delete.getAllAssociatedParts().isEmpty()){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("ERROR");
+                alert.setContentText("Cannot Delete Product while Parts are Associated with it");
+                alert.showAndWait();
+            }
+        */
+        localDatabase.deleteCustomer(delete);
+        
+        Parent root = FXMLLoader.load(getClass().getResource("/view/CustomerPage.fxml"));
+        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
 }

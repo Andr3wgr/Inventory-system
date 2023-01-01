@@ -4,14 +4,10 @@
  */
 package controller;
 
-import java.awt.event.ActionEvent;
 import java.io.IOException;
-import static java.lang.Integer.parseInt;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -25,39 +21,48 @@ import javafx.stage.Stage;
 import model.Customer;
 import model.localDatabase;
 
+
 /**
  * FXML Controller class
  *
  * @author LabUser
  */
-public class AddCustomerController implements Initializable {
-    @FXML
-    private TextField addressTxt;
-    @FXML
-    private ComboBox<String> countryCb;
-    @FXML
-    private Label customerId;
-    @FXML
-    private ComboBox<String> divisionCb;
-    @FXML
-    private TextField nameTxt;
-    @FXML
-    private TextField phoneTxt;
-    @FXML
-    private TextField postalTxt;
-    private String id;
+public class UpdateCustomerController implements Initializable {
+   private static Customer customer = null; 
+   @FXML
+   private TextField addressTxt;
+   @FXML
+   private ComboBox<String> countryCb;
+   @FXML
+   private Label customerId;
+   @FXML
+   private ComboBox<String> divisionCb;
+   @FXML
+   private TextField nameTxt;
+   @FXML
+   private TextField phoneTxt;
+   @FXML
+   private TextField postalTxt;
+   
+   public static void passCustomer(Customer customer){
+        UpdateCustomerController.customer = customer;
+    }
     /**
      * Initializes the controller class.
      */
     @Override
-    public void initialize(URL url, ResourceBundle rb) {  
-        id = Integer.toString(ChoosePageController.getCustId());
-        customerId.setText(id);
+    public void initialize(URL url, ResourceBundle rb) {
         String[] country = {"1","2","3"};
         countryCb.getItems().addAll(country);
-           
-    }  
-    
+        customerId.setText(customer.getCustomerId());
+        nameTxt.setText(customer.getCustomerName());
+        addressTxt.setText(customer.getCustomerAddress());
+        postalTxt.setText(customer.getCustomerPostalCode());
+        phoneTxt.setText(customer.getCustomerPhone());
+        customerId.setText(customer.getCustomerId());
+        countryCb.getSelectionModel().select(customer.getCustomerCountryId());
+        divisionCb.getSelectionModel().select(customer.getCustomerDivision());
+    } 
     @FXML
     private void countryClicked() throws SQLException{
         divisionCb.getItems().clear();
@@ -71,15 +76,14 @@ public class AddCustomerController implements Initializable {
     }
     @FXML
     private void save(javafx.event.ActionEvent event) throws IOException, SQLException{
-                  
+           String id = customer.getCustomerId();
            String name = nameTxt.getText();
            String address = addressTxt.getText();
            String postal = postalTxt.getText();
            String phone = phoneTxt.getText();
            String division = divisionCb.getSelectionModel().getSelectedItem();
-           localDatabase.addCustomer(id, name, address, postal, phone, division);
-           ChoosePageController.setCustId(Integer.parseInt(id)+1);
-  
+           localDatabase.updateCustomer(id, name, address, postal, phone, division);
+           
            Parent root = FXMLLoader.load(getClass().getResource("/view/CustomerPage.fxml"));
            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
            Scene scene = new Scene(root);

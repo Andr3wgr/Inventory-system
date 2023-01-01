@@ -22,6 +22,8 @@ import model.localDatabase;
  * @author LabUser
  */
 public class Software2 extends Application{
+    
+   
   
     public static void main(String[] args){
         launch(args);
@@ -29,11 +31,7 @@ public class Software2 extends Application{
 
     @Override
     public void start(Stage stage) throws Exception {
-
-
-        
-        
-        Parent root = FXMLLoader.load(getClass().getResource("/view/LoginPage.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/view/ChoosePage.fxml"));
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.setTitle("Software 2");

@@ -11,11 +11,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="366.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AddCustomerController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="366.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.UpdateCustomerController">
    <children>
       <BorderPane layoutY="-14.0" prefHeight="404.0" prefWidth="379.0">
          <top>
-            <Label alignment="TOP_LEFT" contentDisplay="CENTER" prefHeight="28.0" prefWidth="151.0" text="Add Customer" BorderPane.alignment="TOP_LEFT">
+            <Label alignment="TOP_LEFT" contentDisplay="CENTER" prefHeight="28.0" prefWidth="151.0" text="Update Customer" BorderPane.alignment="TOP_LEFT">
                <font>
                   <Font size="19.0" />
                </font>

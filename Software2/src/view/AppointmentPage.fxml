@@ -6,6 +6,7 @@
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -18,9 +19,9 @@
          <bottom>
             <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="60.0" BorderPane.alignment="CENTER">
                <children>
-                  <Button mnemonicParsing="false" text="Add" textAlignment="CENTER" />
-                  <Button mnemonicParsing="false" text="Update" />
-                  <Button alignment="BOTTOM_RIGHT" mnemonicParsing="false" text="Delete" />
+                  <Button mnemonicParsing="false" onAction="#addAppointment" text="Add" textAlignment="CENTER" />
+                  <Button mnemonicParsing="false" onAction="#updateAppointment" text="Update" />
+                  <Button alignment="BOTTOM_RIGHT" mnemonicParsing="false" onAction="#delete" text="Delete" />
                </children>
                <padding>
                   <Insets right="45.0" />
@@ -68,9 +69,12 @@
                               <Insets right="300.0" />
                            </padding>
                         </Label>
-                        <RadioButton mnemonicParsing="false" text="All Appointments" />
-                        <RadioButton mnemonicParsing="false" text="This Week" />
-                        <RadioButton mnemonicParsing="false" text="This Month" />
+                        <RadioButton fx:id="allRb" mnemonicParsing="false" onAction="#Filter" selected="true" text="All Appointments">
+                           <toggleGroup>
+                              <ToggleGroup fx:id="filter" />
+                           </toggleGroup></RadioButton>
+                        <RadioButton fx:id="weekRb" mnemonicParsing="false" onAction="#Filter" text="This Week" toggleGroup="$filter" />
+                        <RadioButton fx:id="monthRb" mnemonicParsing="false" onAction="#Filter" text="This Month" toggleGroup="$filter" />
                      </children>
                      <opaqueInsets>
                         <Insets />

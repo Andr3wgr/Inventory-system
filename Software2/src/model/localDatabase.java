@@ -4,7 +4,13 @@
  */
 package model;
 
+import controller.ChoosePageController;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import javafx.collections.ObservableList;
@@ -27,6 +33,20 @@ public class localDatabase {
         database.close();
     }
     
+    public static String[] utcToLocal(){
+        int[] time = {8,9,10,11,12,13,14,15,16,17,18,19,20,21,22};
+        String[] aptTime = {"8:00","9:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00"};
+        
+        
+        return aptTime;
+    }
+    
+    public static String[] localToUtc(String string){
+        
+    
+        
+        return null;
+    }
     public static void populateCustomerTable(String string) throws SQLException{
         Statement mystmt = database.createStatement();
         ResultSet myrs = mystmt.executeQuery(string);
@@ -52,14 +72,19 @@ public class localDatabase {
             String description = myrs.getString("Description");
             String location = myrs.getString("Location");
             String contact = myrs.getString("Contact_Name");
-            String type = myrs.getString("Type");
+            String type = myrs.getString("Type"); 
             
-            //function to convert start and end dates from utc to local time
-            String start = myrs.getString("Start");
-            String end = myrs.getString("End");
+            String format = ("yyyy-mm-dd hh:mm:ss");
+            
+            LocalDateTime start = (LocalDateTime) myrs.getObject("Start");         
+            LocalDateTime end = (LocalDateTime) myrs.getObject("End");
             String custid = myrs.getString("Customer_ID");
             String userid = myrs.getString("User_ID");
+            ZonedDateTime start1 = start.atZone(ZoneId.of("UTC"));
+            start1 = start1.withZoneSameInstant(ZoneId.systemDefault());
+            start = start1.toLocalDateTime();
            
+             //function to convert start and end dates from utc to local time
             Appointment.addAppointment(new Appointment(aptid,title,description,location
                     ,contact,type,start,end,custid,userid));
         }      
@@ -71,6 +96,8 @@ public class localDatabase {
             if(myrs.getString("User_Name").equals(user)){
                 if(myrs.getString("Password").equals(pass)){
                     //add to login history
+                    //save userid
+                    ChoosePageController.setUserId(Integer.parseInt(myrs.getString("User_ID")));
                     return true;
                 }
             }
@@ -125,6 +152,7 @@ public class localDatabase {
         deleteCustomer.executeUpdate("Delete FROM client_schedule.customers where Customer_ID = "+customerId);
         closeConnection();
     }
+    
 
     public static int getNextId() throws SQLException {
         openConnection();
@@ -140,5 +168,88 @@ public class localDatabase {
         return lastId+1;       
     }
 
+    public static int getUserId() throws SQLException {
+        
+        //redo SQL staments!!
+        
+        openConnection();
+        Statement mystmt = database.createStatement();
+        ResultSet myrs = mystmt.executeQuery("SELECT Appointment_ID FROM client_schedule.appointments");  
+        int lastId = 0;
+        while(myrs.next()){
+            if(lastId<Integer.parseInt(myrs.getString("Appointment_ID"))){
+            lastId = Integer.parseInt(myrs.getString("Appointment_ID"));
+            }
+        }
+        closeConnection(); 
+        return lastId+1;      
+    }
 
+    public static String[] getCustomerIds() throws SQLException {
+        openConnection();
+        String[] custIds = {};
+        Statement mystmt = database.createStatement();
+        ResultSet myrs = mystmt.executeQuery("SELECT Customer_ID FROM client_schedule.customers;");  
+        while(myrs.next()){
+           ArrayList<String> custIdList = new ArrayList<String>(Arrays.asList(custIds));
+           custIdList.add(myrs.getString("Customer_ID"));
+           custIds = custIdList.toArray(custIds);
+        }
+        closeConnection();
+        return custIds;    
+    }
+
+    public static String[] getContactNames() throws SQLException {
+        openConnection();
+        String[] contName = {};
+        Statement mystmt = database.createStatement();
+        ResultSet myrs = mystmt.executeQuery("SELECT Contact_Name FROM client_schedule.contacts");  
+        while(myrs.next()){
+           ArrayList<String> contNameList = new ArrayList<String>(Arrays.asList(contName));
+           contNameList.add(myrs.getString("Contact_Name"));
+           contName = contNameList.toArray(contName);
+        }
+        closeConnection();
+        return contName;  
+    }
+
+    public static void addAppointment(String aId, String title, String description, String location, String contName, String type, LocalDateTime startDateandTime, LocalDateTime endDateandTime, String custId, String userId) throws SQLException {
+        openConnection();
+        Statement getcontactId = database.createStatement();
+        ResultSet contactId = getcontactId.executeQuery("SELECT Contact_ID FROM client_schedule.contacts where Contact_Name = '"+contName+"'");
+        int contactInt = 0;
+        while(contactId.next()){
+            contactInt = Integer.parseInt(contactId.getString("Contact_ID"));
+        }
+        //convert times from local time to UTC
+        
+        Statement insert = database.createStatement();
+        insert.executeUpdate("insert into client_schedule.appointments(Appointment_ID,Title,Description,Location,Type,Start,End,Customer_ID,User_ID,Contact_ID) "
+                + "values("+Integer.parseInt(aId)+",\""+title+"\",\""+description+"\",\""+location+"\",\""+type+"\",\""+startDateandTime+"\",\""+endDateandTime+"\","+custId+","+userId+","+contactInt+");");
+        closeConnection();
+        
+    }
+
+    public static void deleteAppointmnet(Appointment delete) throws SQLException {
+        openConnection();
+        int appointmentId = Integer.parseInt(delete.getAppointmentId());
+        Statement deleteCustomer = database.createStatement();
+        deleteCustomer.executeUpdate("Delete FROM client_schedule.appointments where Appointment_ID = "+appointmentId);
+        closeConnection();
+    }
+
+    public static boolean checkDelete(int i) throws SQLException {
+        boolean test = true;
+        openConnection();
+        Statement mystmt = database.createStatement();
+        ResultSet myrs = mystmt.executeQuery("SELECT Customer_ID FROM client_schedule.appointments");
+        while(myrs.next()){
+            if(myrs.getString("Customer_ID").equals(String.valueOf(i))){
+                test= false;
+            }
+        }
+        closeConnection();
+        return test;
+    }
+    
 }

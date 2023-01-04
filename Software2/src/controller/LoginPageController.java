@@ -57,7 +57,7 @@ public class LoginPageController implements Initializable {
         Locale currentLocale = Locale.getDefault();
         ZoneId zone = ZoneId.systemDefault();
         locationLb.setText(zone.toString());
-        if(String.valueOf(currentLocale.getDisplayLanguage())=="French"){
+        if(String.valueOf(currentLocale.getLanguage())=="fr"){
             titleLb.setText("Connexion");
             usernameLb.setText("Nom d'utilisateur");
             passwordLb.setText("Mot de passe");

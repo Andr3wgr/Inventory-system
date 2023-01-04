@@ -4,6 +4,7 @@
  */
 package model;
 
+import java.time.LocalDateTime;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -19,12 +20,13 @@ public class Appointment {
     private String Location;
     private String contact;
     private String type;
-    private String startDateandTime;
-    private String endDateandTime;
+    private LocalDateTime startDateandTime;
+    private LocalDateTime endDateandTime;
     private String customerId;
     private String userId;
+    
 
-    public Appointment(String appointmentId, String title, String description, String Location, String contact, String type, String startDateandTime, String endDateandTime, String customerId, String userId) {
+    public Appointment(String appointmentId, String title, String description, String Location, String contact, String type, LocalDateTime startDateandTime, LocalDateTime endDateandTime, String customerId, String userId) {
         this.appointmentId = appointmentId;
         this.title = title;
         this.description = description;
@@ -36,6 +38,8 @@ public class Appointment {
         this.customerId = customerId;
         this.userId = userId;
     }
+
+   
    public static void clear() {
         Appointments.clear();
     }
@@ -93,19 +97,19 @@ public class Appointment {
         this.type = type;
     }
 
-    public String getStartDateandTime() {
+    public LocalDateTime getStartDateandTime() {
         return startDateandTime;
     }
 
-    public void setStartDateandTime(String startDateandTime) {
+    public void setStartDateandTime(LocalDateTime startDateandTime) {
         this.startDateandTime = startDateandTime;
     }
 
-    public String getEndDateandTime() {
+    public LocalDateTime getEndDateandTime() {
         return endDateandTime;
     }
 
-    public void setEndDateandTime(String endDateandTime) {
+    public void setEndDateandTime(LocalDateTime endDateandTime) {
         this.endDateandTime = endDateandTime;
     }
 

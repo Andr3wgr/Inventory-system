@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,11 +20,13 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
+import model.Appointment;
 import model.Customer;
 import model.localDatabase;
 
@@ -117,21 +120,22 @@ public class CustomerPageController implements Initializable {
                 alert.setContentText("No Customer Selected");
                 alert.showAndWait();
         }
-        
-        /*if (delete != null && delete.getAllAssociatedParts().isEmpty()){
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Are You sure You want to Delete this Product?");
+        boolean del= localDatabase.checkDelete(Integer.parseInt(delete.getCustomerId()));
+        if (delete != null && del==true){
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Are You sure You want to Delete this Customer?");
                 Optional<ButtonType> result = alert.showAndWait();
                 if(result.isPresent() && result.get()==ButtonType.OK){
-                    Inventory.deleteProduct(delete);       
+                    Alert alert2 = new Alert(Alert.AlertType.INFORMATION,"Customer Has been Deleted");
+                    localDatabase.deleteCustomer(delete);  
+                    alert2.show();
                 }
-            }if(delete != null && !delete.getAllAssociatedParts().isEmpty()){
+            }if(delete != null && del==false){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("ERROR");
-                alert.setContentText("Cannot Delete Product while Parts are Associated with it");
+                alert.setContentText("Cannot Delete Customer While Customer Has Appointments Scheduled");
                 alert.showAndWait();
             }
-        */
-        localDatabase.deleteCustomer(delete);
+        
         
         Parent root = FXMLLoader.load(getClass().getResource("/view/CustomerPage.fxml"));
         Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();

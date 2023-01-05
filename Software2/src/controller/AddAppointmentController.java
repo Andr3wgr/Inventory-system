@@ -20,11 +20,13 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import model.Appointment;
 import model.TimeZones;
 import model.localDatabase;
 
@@ -78,7 +80,7 @@ public class AddAppointmentController implements Initializable {
     }  
     @FXML
     private void save(javafx.event.ActionEvent event) throws IOException, SQLException{
-                
+           boolean checkOverlap =false;
            String userId = Integer.toString(ChoosePageController.getUserId());
            String description = descTxt.getText();
            String location = locTxt.getText();
@@ -86,24 +88,35 @@ public class AddAppointmentController implements Initializable {
            String type = typeTxt.getText();
            String custId = custIdCb.getSelectionModel().getSelectedItem();
            String contName = contactCb.getSelectionModel().getSelectedItem();
-           LocalDate date = Date.getValue();
-           
+           LocalDate date = Date.getValue();           
            LocalTime sTime = LocalTime.parse(startTime.getValue());
-           LocalTime eTime = LocalTime.parse(endTime.getValue());
-           
+           LocalTime eTime = LocalTime.parse(endTime.getValue());          
            LocalDateTime startDateandTime = LocalDateTime.of(date, sTime);
-           LocalDateTime endDateandTime = LocalDateTime.of(date, eTime);
-          
-          
+           LocalDateTime endDateandTime = LocalDateTime.of(date, eTime);                    
            
-           localDatabase.addAppointment(aId, title, description, location, contName, type,startDateandTime,endDateandTime,custId,userId);
-           ChoosePageController.setApptId(Integer.parseInt(aId)+1);
-  
-           Parent root = FXMLLoader.load(getClass().getResource("/view/AppointmentPage.fxml"));
-           Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-           Scene scene = new Scene(root);
-           stage.setScene(scene);
-           stage.show();
+            if(startDateandTime.isAfter(endDateandTime)||startDateandTime.isEqual(endDateandTime)){
+             Alert alert1 = new Alert(Alert.AlertType.ERROR);
+             alert1.setTitle("ERROR");
+             alert1.setContentText("Start Time Must be Before End Time");
+             alert1.showAndWait(); 
+             return;
+            }
+    
+           if(checkOverlap = Appointment.checkOverlap(startDateandTime,endDateandTime,aId)){
+                localDatabase.addAppointment(aId, title, description, location, contName, type,startDateandTime,endDateandTime,custId,userId);
+                ChoosePageController.setApptId(Integer.parseInt(aId)+1);
+
+                Parent root = FXMLLoader.load(getClass().getResource("/view/AppointmentPage.fxml"));
+                Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();}
+           else if(checkOverlap == false){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("ERROR");
+                alert.setContentText("Cannot Schedule Overlapping Appointments");
+                alert.showAndWait();
+           }
     }
     @FXML
     private void cancel(javafx.event.ActionEvent event) throws IOException{

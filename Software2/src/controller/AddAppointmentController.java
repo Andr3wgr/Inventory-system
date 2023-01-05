@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -24,6 +25,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import model.TimeZones;
 import model.localDatabase;
 
 /**
@@ -41,13 +43,11 @@ public class AddAppointmentController implements Initializable {
     @FXML
     private TextField descTxt;
     @FXML
-    private DatePicker endDate;
-    @FXML
     private ComboBox<String> endTime;
     @FXML
     private TextField locTxt;
     @FXML
-    private DatePicker startDate;
+    private DatePicker Date;
     @FXML
     private ComboBox<String> startTime;
     @FXML
@@ -69,8 +69,8 @@ public class AddAppointmentController implements Initializable {
         try {
             custIdCb.getItems().addAll(localDatabase.getCustomerIds());
             contactCb.getItems().addAll(localDatabase.getContactNames());
-            startTime.getItems().addAll(localDatabase.utcToLocal());
-            endTime.getItems().addAll(localDatabase.utcToLocal());
+            startTime.getItems().addAll(TimeZones.estToLocal());
+            endTime.getItems().addAll(TimeZones.estToLocal());
         } catch (SQLException ex) {
             Logger.getLogger(AddAppointmentController.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -86,13 +86,13 @@ public class AddAppointmentController implements Initializable {
            String type = typeTxt.getText();
            String custId = custIdCb.getSelectionModel().getSelectedItem();
            String contName = contactCb.getSelectionModel().getSelectedItem();
-           LocalDate sDate = startDate.getValue();
-           LocalDate eDate = endDate.getValue();
+           LocalDate date = Date.getValue();
+           
            LocalTime sTime = LocalTime.parse(startTime.getValue());
            LocalTime eTime = LocalTime.parse(endTime.getValue());
            
-           LocalDateTime startDateandTime = LocalDateTime.of(sDate, sTime);
-           LocalDateTime endDateandTime = LocalDateTime.of(eDate, eTime);
+           LocalDateTime startDateandTime = LocalDateTime.of(date, sTime);
+           LocalDateTime endDateandTime = LocalDateTime.of(date, eTime);
           
           
            

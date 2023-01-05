@@ -77,17 +77,21 @@
                         <ComboBox fx:id="contactCb" prefWidth="150.0" />
                      </children>
                   </HBox>
-                  <HBox prefHeight="100.0" prefWidth="200.0" spacing="30.0">
+                  <HBox prefHeight="100.0" prefWidth="200.0" spacing="110.0">
                      <children>
-                        <Label text="Start Date and Time" />
-                        <DatePicker fx:id="startDate" />
+                        <Label text="Date" />
+                        <DatePicker fx:id="Date" />
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0" spacing="80.0">
+                     <children>
+                        <Label text="Start Time" />
                         <ComboBox fx:id="startTime" prefWidth="150.0" />
                      </children>
                   </HBox>
-                  <HBox prefHeight="100.0" prefWidth="200.0" spacing="34.0">
+                  <HBox prefHeight="100.0" prefWidth="200.0" spacing="83.0">
                      <children>
-                        <Label text="End Date and Time" />
-                        <DatePicker fx:id="endDate" />
+                        <Label text="End Time" />
                         <ComboBox fx:id="endTime" prefWidth="150.0" />
                      </children>
                   </HBox>
@@ -108,7 +112,7 @@
             </Label>
          </top>
          <bottom>
-            <HBox alignment="BOTTOM_RIGHT" prefHeight="67.0" prefWidth="503.0" spacing="40.0" BorderPane.alignment="BOTTOM_RIGHT">
+            <HBox alignment="BOTTOM_RIGHT" prefHeight="39.0" prefWidth="473.0" spacing="40.0" BorderPane.alignment="BOTTOM_RIGHT">
                <children>
                   <Button mnemonicParsing="false" onAction="#save" text="Save" />
                   <Button mnemonicParsing="false" onAction="#cancel" text="Cancel" />

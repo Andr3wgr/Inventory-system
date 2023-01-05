@@ -33,20 +33,7 @@ public class localDatabase {
         database.close();
     }
     
-    public static String[] utcToLocal(){
-        int[] time = {8,9,10,11,12,13,14,15,16,17,18,19,20,21,22};
-        String[] aptTime = {"8:00","9:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00","19:00"};
-        
-        
-        return aptTime;
-    }
-    
-    public static String[] localToUtc(String string){
-        
-    
-        
-        return null;
-    }
+
     public static void populateCustomerTable(String string) throws SQLException{
         Statement mystmt = database.createStatement();
         ResultSet myrs = mystmt.executeQuery(string);
@@ -74,16 +61,14 @@ public class localDatabase {
             String contact = myrs.getString("Contact_Name");
             String type = myrs.getString("Type"); 
             
-            String format = ("yyyy-mm-dd hh:mm:ss");
+            
             
             LocalDateTime start = (LocalDateTime) myrs.getObject("Start");         
             LocalDateTime end = (LocalDateTime) myrs.getObject("End");
             String custid = myrs.getString("Customer_ID");
             String userid = myrs.getString("User_ID");
-            ZonedDateTime start1 = start.atZone(ZoneId.of("UTC"));
-            start1 = start1.withZoneSameInstant(ZoneId.systemDefault());
-            start = start1.toLocalDateTime();
-           
+            start = TimeZones.convertToLocal(start);
+            end = TimeZones.convertToLocal(end);
              //function to convert start and end dates from utc to local time
             Appointment.addAppointment(new Appointment(aptid,title,description,location
                     ,contact,type,start,end,custid,userid));
@@ -168,7 +153,7 @@ public class localDatabase {
         return lastId+1;       
     }
 
-    public static int getUserId() throws SQLException {
+    public static int getApptId() throws SQLException {
         
         //redo SQL staments!!
         
@@ -222,7 +207,8 @@ public class localDatabase {
             contactInt = Integer.parseInt(contactId.getString("Contact_ID"));
         }
         //convert times from local time to UTC
-        
+        startDateandTime = TimeZones.localToUtc(startDateandTime);
+        endDateandTime = TimeZones.localToUtc(endDateandTime);
         Statement insert = database.createStatement();
         insert.executeUpdate("insert into client_schedule.appointments(Appointment_ID,Title,Description,Location,Type,Start,End,Customer_ID,User_ID,Contact_ID) "
                 + "values("+Integer.parseInt(aId)+",\""+title+"\",\""+description+"\",\""+location+"\",\""+type+"\",\""+startDateandTime+"\",\""+endDateandTime+"\","+custId+","+userId+","+contactInt+");");
@@ -250,6 +236,40 @@ public class localDatabase {
         }
         closeConnection();
         return test;
+    }
+
+    public static boolean nextAppointmentWarning(int user) throws SQLException {
+        openConnection();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime current = LocalDateTime.now(ZoneId.of("UTC"));
+        Statement mystmt = database.createStatement();
+        ResultSet myrs = mystmt.executeQuery("SELECT Start FROM client_schedule.appointments");
+        while(myrs.next()){
+            LocalDateTime appointment = LocalDateTime.parse(myrs.getString("Start"),format);
+            if(current.isBefore(appointment) && current.isAfter(appointment.minusMinutes(15))){  
+                return true;
+            }   
+        }
+        closeConnection();
+
+        return false;
+    }
+
+    public static Appointment nextAppointment() throws SQLException {
+        openConnection();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime current = LocalDateTime.now(ZoneId.of("UTC"));
+        Statement mystmt = database.createStatement();
+        ResultSet myrs = mystmt.executeQuery("SELECT * FROM client_schedule.appointments");
+        while(myrs.next()){
+            LocalDateTime appointment = LocalDateTime.parse(myrs.getString("Start"),format);
+            if(current.isBefore(appointment) && current.isAfter(appointment.minusMinutes(15))){  
+                Appointment appt = new Appointment (myrs.getString("Appointment_ID"),null,null,null,null,null,appointment,null,null,null);
+                return appt;
+            }   
+        }
+        closeConnection();
+        return null;
     }
     
 }

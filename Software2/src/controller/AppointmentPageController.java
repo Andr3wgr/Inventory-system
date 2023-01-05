@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -24,6 +25,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
@@ -74,6 +76,7 @@ public class AppointmentPageController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+        
         try {
             Appointment.clear();
             localDatabase.openConnection();
@@ -88,7 +91,9 @@ public class AppointmentPageController implements Initializable {
             appointmentContact.setCellValueFactory(new PropertyValueFactory<>("contact"));
             appointmentType.setCellValueFactory(new PropertyValueFactory<>("type"));
             
-            startDate.setCellValueFactory(new PropertyValueFactory<>("startDateandTime"));
+            
+            
+            startDate.setCellValueFactory(new PropertyValueFactory<>("startDateandTime"));         
             endDate.setCellValueFactory(new PropertyValueFactory<>("endDateandTime"));
             
             

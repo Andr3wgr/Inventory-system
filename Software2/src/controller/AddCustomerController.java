@@ -4,14 +4,10 @@
  */
 package controller;
 
-import java.awt.event.ActionEvent;
 import java.io.IOException;
-import static java.lang.Integer.parseInt;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -22,13 +18,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import model.Customer;
 import model.localDatabase;
 
 /**
- * FXML Controller class
- *
- * @author LabUser
+This controller is used for the Add Customer page.
  */
 public class AddCustomerController implements Initializable {
     @FXML
@@ -46,6 +39,7 @@ public class AddCustomerController implements Initializable {
     @FXML
     private TextField postalTxt;
     private String id;
+    
     /**
      * Initializes the controller class.
      */
@@ -54,10 +48,10 @@ public class AddCustomerController implements Initializable {
         id = Integer.toString(ChoosePageController.getCustId());
         customerId.setText(id);
         String[] country = {"1","2","3"};
-        countryCb.getItems().addAll(country);
-           
+        countryCb.getItems().addAll(country);      
     }  
     
+    /**Filters Division Combo box by country selected.*/
     @FXML
     private void countryClicked() throws SQLException{
         divisionCb.getItems().clear();
@@ -69,9 +63,10 @@ public class AddCustomerController implements Initializable {
             divisionCb.getItems().addAll(localDatabase.returnDivisions(3));
         }
     }
+    
+    /**Saves new Customer and adds to database.*/
     @FXML
-    private void save(javafx.event.ActionEvent event) throws IOException, SQLException{
-                  
+    private void save(javafx.event.ActionEvent event) throws IOException, SQLException{      
            String name = nameTxt.getText();
            String address = addressTxt.getText();
            String postal = postalTxt.getText();
@@ -86,6 +81,8 @@ public class AddCustomerController implements Initializable {
            stage.setScene(scene);
            stage.show();
     }
+    
+    /**Returns to Customer page.*/
     @FXML
     private void cancel(javafx.event.ActionEvent event) throws IOException{
            Parent root = FXMLLoader.load(getClass().getResource("/view/CustomerPage.fxml"));

@@ -27,46 +27,43 @@ import model.Appointment;
 import model.localDatabase;
 
 /**
- * FXML Controller class
- *
- * @author LabUser
+This controller is for displaying the Appointments by customer filtered list. 
  */
 public class AppointmentbyCustomerController implements Initializable {
-      @FXML
+    @FXML
     private TableColumn<Appointment, String> appointmentContact;
-
     @FXML
     private TableColumn<Appointment, String> appointmentDescription;
-
     @FXML
     private TableColumn<Appointment, String> appointmentId;
-
     @FXML
     private TableColumn<Appointment, String> appointmentLocation;
-
     @FXML
     private TableColumn<Appointment, String> appointmentTitle;
-
     @FXML
     private TableColumn<Appointment, String> appointmentType;
-
     @FXML
     private TableView<Appointment> appointmentsTableView;
-
     @FXML
     private TableColumn<Appointment, String> customerId;
-
     @FXML
     private TableColumn<Appointment, LocalDateTime> endDate;
-
     @FXML
     private TableColumn<Appointment, LocalDateTime> startDate;
-
     @FXML
     private TableColumn<Appointment, String> userId;
     private static String custId="";
+    
+    public static String getCustId() {
+        return custId;
+    }
+
+    public static void setCustId(String custId) {
+        AppointmentbyCustomerController.custId = custId;
+    }
+    
     /**
-     * Initializes the controller class.
+     * Initializes the controller class, and filters data by Contact.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -100,26 +97,18 @@ public class AppointmentbyCustomerController implements Initializable {
         customerId.setCellValueFactory(new PropertyValueFactory<>("customerId"));
         userId.setCellValueFactory(new PropertyValueFactory<>("userId"));
         
-       FilteredList<Appointment>contactsfilter = new FilteredList<>(Appointment.getAppointments(), i->true);
+        FilteredList<Appointment>contactsfilter = new FilteredList<>(Appointment.getAppointments(), i->true);
         contactsfilter.setPredicate(appointments->{
-       
         String contact =appointments.getCustomerId();
               return custId.matches(contact);
-        } );
+        });
+        
         SortedList<Appointment> sortedData = new SortedList<>(contactsfilter);
         sortedData.comparatorProperty().bind(appointmentsTableView.comparatorProperty());
         appointmentsTableView.setItems(sortedData);
-          
-        // TODO
     }    
 
-    public static String getCustId() {
-        return custId;
-    }
-
-    public static void setCustId(String custId) {
-        AppointmentbyCustomerController.custId = custId;
-    }
+    /**Returns to the Customer page.*/
     @FXML
     public void back(javafx.event.ActionEvent event) throws IOException {
            Parent root = FXMLLoader.load(getClass().getResource("/view/CustomerPage.fxml"));

@@ -4,8 +4,6 @@
  */
 package controller;
 
-import java.awt.Button;
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
@@ -24,19 +22,14 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import model.Appointment;
 import model.Customer;
 import model.localDatabase;
 
 /**
- * FXML Controller class
- *
- * @author LabUser
+This controller is for the Customer Page.
  */
 public class CustomerPageController implements Initializable {
-
     @FXML
     private TableColumn<Customer, String> customerAddress;
     @FXML
@@ -55,7 +48,7 @@ public class CustomerPageController implements Initializable {
     private TableView<Customer> customerTableView;
  
     /**
-     * Initializes the controller class.
+     * Initializes the controller class, and fills table with Customer objects.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -63,8 +56,7 @@ public class CustomerPageController implements Initializable {
             Customer.clear();
             localDatabase.openConnection();
             localDatabase.populateCustomerTable("SELECT customers.*, first_level_divisions.Country_ID, first_level_divisions.Division from client_schedule.customers \n" +
-"inner join first_level_divisions on customers.Division_ID = first_level_divisions.Division_ID;");
-            
+                    "inner join first_level_divisions on customers.Division_ID = first_level_divisions.Division_ID;");
             customerTableView.setItems(Customer.getCustomers());
             customerId.setCellValueFactory(new PropertyValueFactory<>("customerId"));
             customerName.setCellValueFactory(new PropertyValueFactory<>("CustomerName"));
@@ -73,14 +65,13 @@ public class CustomerPageController implements Initializable {
             customerPhone.setCellValueFactory(new PropertyValueFactory<>("customerPhone"));
             customerDivision.setCellValueFactory(new PropertyValueFactory<>("customerDivision"));
             customerCountryId.setCellValueFactory(new PropertyValueFactory<>("customerCountryId"));
-            
-            localDatabase.closeConnection();
-            
+            localDatabase.closeConnection();            
         }catch (SQLException ex) {
              Logger.getLogger(CustomerPageController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-    }    
+         }
+    }
     
+    /**To Appointment Page.*/
     public void toAppointmentsPage(javafx.event.ActionEvent event) throws IOException {
            Parent root = FXMLLoader.load(getClass().getResource("/view/AppointmentPage.fxml"));
            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -88,6 +79,8 @@ public class CustomerPageController implements Initializable {
            stage.setScene(scene);
            stage.show();
     }
+    
+    /**To Add Customer Page.*/
     public void toAddCustomer(javafx.event.ActionEvent event) throws IOException {
            Parent root = FXMLLoader.load(getClass().getResource("/view/AddCustomer.fxml"));
            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -95,6 +88,8 @@ public class CustomerPageController implements Initializable {
            stage.setScene(scene);
            stage.show();
     }
+    
+    /**To Update Customer page.*/
     public void toUpdateCustomerPage(javafx.event.ActionEvent event) throws IOException {
            Customer update = customerTableView.getSelectionModel().getSelectedItem();
            if(update == null){
@@ -108,18 +103,17 @@ public class CustomerPageController implements Initializable {
            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
            Scene scene = new Scene(root);
            stage.setScene(scene);
-           stage.show();
-    
-           
+           stage.show();       
     }
+    
+    /**Checks if customer has Appointments scheduled and deletes from Customer object and database if no appointments.*/
     public void deleteCustomer(javafx.event.ActionEvent event) throws SQLException, IOException{
         Customer delete = customerTableView.getSelectionModel().getSelectedItem();
         if(delete == null){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("ERROR");
                 alert.setContentText("No Customer Selected");
-                alert.showAndWait();
-                
+                alert.showAndWait();       
         }
         boolean del= localDatabase.checkDelete(Integer.parseInt(delete.getCustomerId()));
         if (delete != null && del==true){
@@ -130,14 +124,13 @@ public class CustomerPageController implements Initializable {
                     localDatabase.deleteCustomer(delete);  
                     alert2.show();
                 }
-            }if(delete != null && del==false){
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("ERROR");
-                alert.setContentText("Cannot Delete Customer While Customer Has Appointments Scheduled");
-                alert.showAndWait();
-            }
-        
-        
+        }if(delete != null && del==false){
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("ERROR");
+            alert.setContentText("Cannot Delete Customer While Customer Has Appointments Scheduled");
+            alert.showAndWait();
+        }
+
         Parent root = FXMLLoader.load(getClass().getResource("/view/CustomerPage.fxml"));
         Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
@@ -145,14 +138,15 @@ public class CustomerPageController implements Initializable {
         stage.show();
     }
     
+    /**To Appointment by Customer Page.*/
     public void viewAppointments(javafx.event.ActionEvent event) throws SQLException, IOException{
         Customer view = customerTableView.getSelectionModel().getSelectedItem();
         if(view == null){
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("ERROR");
-                alert.setContentText("No Customer Selected");
-                alert.showAndWait();
-                return;
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("ERROR");
+            alert.setContentText("No Customer Selected");
+            alert.showAndWait();
+            return;
         }
         AppointmentbyCustomerController.setCustId(view.getCustomerId());
         Parent root = FXMLLoader.load(getClass().getResource("/view/AppointmentbyCustomer.fxml"));

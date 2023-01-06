@@ -6,39 +6,35 @@ package model;
 
 import controller.ChoosePageController;
 import java.sql.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import javafx.collections.ObservableList;
-
 
 /**
- *
- * @author LabUser
+Class localDatabase used for all calls to the database.
  */
 public class localDatabase {
     private static String url = "jdbc:mysql://localhost:3306/client_schedule";
     private static String user = "sqlUser";
     private static String pass = "Passw0rd!";
     private static Connection database;
-   
+ 
+    /**Opens connection to database.*/
     public static void openConnection() throws SQLException{
         database = DriverManager.getConnection(url, user, pass);
     }
+    
+    /**Closes connection to database*/
     public static void closeConnection() throws SQLException{
         database.close();
     }
     
-
+    /**Used to add Customer from database to Customer object.*/
     public static void populateCustomerTable(String string) throws SQLException{
         Statement mystmt = database.createStatement();
         ResultSet myrs = mystmt.executeQuery(string);
-       
         while (myrs.next()){
             String id = myrs.getString("Customer_Id");
             String name = myrs.getString("Customer_Name");
@@ -50,38 +46,37 @@ public class localDatabase {
             model.Customer.addCustomer(new Customer(id,name,address,postalCode,phone,division,countryId));
         }      
     }
+    
+    /**Used to add Appointments from database to Appointment object.*/
     public static void populateAppointmentTable(String string) throws SQLException{
         Statement mystmt = database.createStatement();
         ResultSet myrs = mystmt.executeQuery(string);
-       
         while (myrs.next()){
             String aptid = myrs.getString("Appointment_ID");
             String title = myrs.getString("Title");
             String description = myrs.getString("Description");
             String location = myrs.getString("Location");
             String contact = myrs.getString("Contact_Name");
-            String type = myrs.getString("Type"); 
-            
-            
-            
+            String type = myrs.getString("Type");       
             LocalDateTime start = (LocalDateTime) myrs.getObject("Start");         
             LocalDateTime end = (LocalDateTime) myrs.getObject("End");
             String custid = myrs.getString("Customer_ID");
             String userid = myrs.getString("User_ID");
+            //function to convert start and end dates from utc to local time
             start = TimeZones.convertToLocal(start);
-            end = TimeZones.convertToLocal(end);
-             //function to convert start and end dates from utc to local time
+            end = TimeZones.convertToLocal(end);           
             Appointment.addAppointment(new Appointment(aptid,title,description,location
                     ,contact,type,start,end,custid,userid));
         }      
     }
+    
+    /**Checks database for login credentials, returns true if found.*/
     public static boolean login(String user, String pass) throws SQLException{
         Statement mystmt = database.createStatement();
         ResultSet myrs = mystmt.executeQuery("SELECT * FROM client_schedule.users");     
         while(myrs.next()){
             if(myrs.getString("User_Name").equals(user)){
                 if(myrs.getString("Password").equals(pass)){
-                    //add to login history
                     //save userid
                     ChoosePageController.setUserId(Integer.parseInt(myrs.getString("User_ID")));
                     return true;
@@ -90,6 +85,8 @@ public class localDatabase {
         }     
         return false;
     }
+    
+    /**filters Division information from database by Country number.*/
     public static String[] returnDivisions(int countryNum) throws SQLException{
         openConnection();
         String[] divisions = {};
@@ -103,6 +100,8 @@ public class localDatabase {
         closeConnection();
         return divisions;
     }
+    
+    /**Adds newly created Customer object to database.*/
     public static void addCustomer(String id,String name,String address,String postal,String phone,String division) throws SQLException{
         openConnection();
         Statement getdivisionId = database.createStatement();
@@ -117,6 +116,7 @@ public class localDatabase {
         closeConnection();
     }
     
+    /**Updated Customer object gets updated to database.*/
     public static void updateCustomer(String id, String name, String address, String postal, String phone, String division) throws SQLException {
         openConnection();
         Statement getdivisionId = database.createStatement();
@@ -131,6 +131,7 @@ public class localDatabase {
         closeConnection();
     }
     
+    /**Deletes Customer from database.*/
     public static void deleteCustomer(Customer delete) throws SQLException {
         openConnection();
         int customerId = Integer.parseInt(delete.getCustomerId());
@@ -139,7 +140,7 @@ public class localDatabase {
         closeConnection();
     }
     
-
+    /**Used for displaying 15 min Appointment warning.*/
     public static int getNextId() throws SQLException {
         openConnection();
         Statement mystmt = database.createStatement();
@@ -154,10 +155,8 @@ public class localDatabase {
         return lastId+1;       
     }
 
-    public static int getApptId() throws SQLException {
-        
-        //redo SQL staments!!
-        
+    /**Used for displaying 15 min Appointment warning.*/
+    public static int getApptId() throws SQLException {       
         openConnection();
         Statement mystmt = database.createStatement();
         ResultSet myrs = mystmt.executeQuery("SELECT Appointment_ID FROM client_schedule.appointments");  
@@ -171,6 +170,7 @@ public class localDatabase {
         return lastId+1;      
     }
 
+    /**Returns CustomerId array.*/
     public static String[] getCustomerIds() throws SQLException {
         openConnection();
         String[] custIds = {};
@@ -185,6 +185,7 @@ public class localDatabase {
         return custIds;    
     }
 
+    /**Returns Contact Names array.*/
     public static String[] getContactNames() throws SQLException {
         openConnection();
         String[] contName = {};
@@ -199,6 +200,7 @@ public class localDatabase {
         return contName;  
     }
 
+    /**Adds newly created Appointment to database.*/
     public static void addAppointment(String aId, String title, String description, String location, String contName, String type, LocalDateTime startDateandTime, LocalDateTime endDateandTime, String custId, String userId) throws SQLException {
         openConnection();
         Statement getcontactId = database.createStatement();
@@ -217,6 +219,7 @@ public class localDatabase {
         
     }
 
+    /**Deletes Appointment from database.*/
     public static void deleteAppointmnet(Appointment delete) throws SQLException {
         openConnection();
         int appointmentId = Integer.parseInt(delete.getAppointmentId());
@@ -239,6 +242,7 @@ public class localDatabase {
         return test;
     }
 
+    /**Finds if next appointment in in 15 min.*/
     public static boolean nextAppointmentWarning(int user) throws SQLException {
         openConnection();
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -252,10 +256,10 @@ public class localDatabase {
             }   
         }
         closeConnection();
-
         return false;
     }
 
+    /**returns Appointment if in next 15 min.*/
     public static Appointment nextAppointment() throws SQLException {
         openConnection();
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -273,6 +277,7 @@ public class localDatabase {
         return null;
     }
 
+    /**Newly updated Appointment object gets updated in database.*/
     public static void updateAppointment(String userId, String apptId, String title, String desc, String location, String custId, String contact, LocalDateTime start, LocalDateTime end) throws SQLException {
         openConnection();
         Statement getcontactId = database.createStatement();
@@ -287,7 +292,5 @@ public class localDatabase {
         update.executeUpdate("update client_schedule.appointments set User_ID ='"+userId+"',Contact_ID ='"+contactInt+"',Description = '"+desc+"',Title = '"+title+"'"+","
                 + "Location ='"+location+"',Customer_ID = '"+custId+"',Start = '"+start+"',End = '"+end+"' where Appointment_ID ='"+apptId+"'");
         closeConnection();
-    }
-
-    
+    }   
 }

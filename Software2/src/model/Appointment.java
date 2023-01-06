@@ -9,8 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- *
- * @author LabUser
+Class Appointment used for getting and setting Appointment objects.
  */
 public class Appointment {
     private static ObservableList<Appointment> Appointments = FXCollections.observableArrayList();
@@ -25,7 +24,6 @@ public class Appointment {
     private String customerId;
     private String userId;
     
-
     public Appointment(String appointmentId, String title, String description, String Location, String contact, String type, LocalDateTime startDateandTime, LocalDateTime endDateandTime, String customerId, String userId) {
         this.appointmentId = appointmentId;
         this.title = title;
@@ -38,17 +36,19 @@ public class Appointment {
         this.customerId = customerId;
         this.userId = userId;
     }
-
    
    public static void clear() {
         Appointments.clear();
     }
+   
    public static void addAppointment(Appointment appointment){
         Appointments.add(appointment);
     }
+   
     public static ObservableList<Appointment> getAppointments() {
         return Appointments;
     }
+    
     public String getAppointmentId() {
         return appointmentId;
     }
@@ -129,6 +129,7 @@ public class Appointment {
         this.userId = userId;
     }
     
+    /**Checks for overlapping appointments before saving a new/updated appointment.*/
     public static boolean checkOverlap(LocalDateTime startDateandTime, LocalDateTime endDateandTime,String ApptId) {
         for(Appointment appointment: Appointment.getAppointments()){
             if(ApptId==appointment.getAppointmentId()){

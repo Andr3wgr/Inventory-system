@@ -10,7 +10,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,9 +30,7 @@ import model.TimeZones;
 import model.localDatabase;
 
 /**
- * FXML Controller class
- *
- * @author LabUser
+This Controller is used for the Add Appointments screen.
  */
 public class AddAppointmentController implements Initializable {
     @FXML
@@ -59,6 +56,7 @@ public class AddAppointmentController implements Initializable {
     @FXML
     private Label userIdLb;
     private String aId;
+    
     /**
      * Initializes the controller class.
      */
@@ -77,7 +75,9 @@ public class AddAppointmentController implements Initializable {
             Logger.getLogger(AddAppointmentController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    }  
+    } 
+    
+    /**Saves a new Appointment.*/
     @FXML
     private void save(javafx.event.ActionEvent event) throws IOException, SQLException{
            boolean checkOverlap =false;
@@ -94,14 +94,15 @@ public class AddAppointmentController implements Initializable {
            LocalDateTime startDateandTime = LocalDateTime.of(date, sTime);
            LocalDateTime endDateandTime = LocalDateTime.of(date, eTime);                    
            
-            if(startDateandTime.isAfter(endDateandTime)||startDateandTime.isEqual(endDateandTime)){
+           /**Checks if start is before end time.*/
+           if(startDateandTime.isAfter(endDateandTime)||startDateandTime.isEqual(endDateandTime)){
              Alert alert1 = new Alert(Alert.AlertType.ERROR);
              alert1.setTitle("ERROR");
              alert1.setContentText("Start Time Must be Before End Time");
              alert1.showAndWait(); 
              return;
-            }
-    
+           }
+           /**Checks if appointment overlaps another.*/
            if(checkOverlap = Appointment.checkOverlap(startDateandTime,endDateandTime,aId)){
                 localDatabase.addAppointment(aId, title, description, location, contName, type,startDateandTime,endDateandTime,custId,userId);
                 ChoosePageController.setApptId(Integer.parseInt(aId)+1);
@@ -110,14 +111,16 @@ public class AddAppointmentController implements Initializable {
                 Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
                 Scene scene = new Scene(root);
                 stage.setScene(scene);
-                stage.show();}
-           else if(checkOverlap == false){
+                stage.show();
+           }else if(checkOverlap == false){
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("ERROR");
                 alert.setContentText("Cannot Schedule Overlapping Appointments");
                 alert.showAndWait();
            }
     }
+    
+    /**Return to Appointment page.*/
     @FXML
     private void cancel(javafx.event.ActionEvent event) throws IOException{
            Parent root = FXMLLoader.load(getClass().getResource("/view/AppointmentPage.fxml"));

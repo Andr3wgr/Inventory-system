@@ -8,13 +8,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 /**
- *
- * @author LabUser
+Class Customer Used for getting and setting Customer objects.
  */
 public class Customer {
     private static ObservableList<Customer> Customers = FXCollections.observableArrayList();
-
-
     private String customerId;
     private String customerName;
     private String customerAddress;
@@ -44,14 +41,17 @@ public class Customer {
     public static ObservableList<Customer> getCustomers() {
         return Customers;
     }
+    
     public static void clear() {
         Customers.clear();
-    }   
+    } 
+    
     public static void addCustomer(Customer customer){
         Customers.add(customer);
     }
+    
     public void setCustomers(ObservableList<Customer> Customers) {
-        this.Customers = Customers;
+        Customer.Customers = Customers;
     }
 
     public String getCustomerId() {
@@ -100,6 +100,5 @@ public class Customer {
 
     public void setCustomerDivision(String customerDivisionId) {
         this.customerDivision = customerDivisionId;
-    }
-    
+    }    
 }

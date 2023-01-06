@@ -20,6 +20,16 @@
          <bottom>
             <HBox alignment="TOP_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="60.0" BorderPane.alignment="CENTER">
                <children>
+                  <Button mnemonicParsing="false" onAction="#totalMonth" text="Total by Month">
+                     <HBox.margin>
+                        <Insets top="15.0" />
+                     </HBox.margin>
+                  </Button>
+                  <Button mnemonicParsing="false" onAction="#totalType" text="Total by Type">
+                     <HBox.margin>
+                        <Insets right="400.0" top="15.0" />
+                     </HBox.margin>
+                  </Button>
                   <Button mnemonicParsing="false" onAction="#addAppointment" text="Add" textAlignment="CENTER" />
                   <Button mnemonicParsing="false" onAction="#updateAppointment" text="Update" />
                   <Button alignment="BOTTOM_RIGHT" mnemonicParsing="false" onAction="#delete" text="Delete" />

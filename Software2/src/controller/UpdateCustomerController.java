@@ -21,14 +21,10 @@ import javafx.stage.Stage;
 import model.Customer;
 import model.localDatabase;
 
-
 /**
- * FXML Controller class
- *
- * @author LabUser
+This controller is for the Update Customer Page.
  */
 public class UpdateCustomerController implements Initializable {
-   private static Customer customer = null; 
    @FXML
    private TextField addressTxt;
    @FXML
@@ -43,12 +39,15 @@ public class UpdateCustomerController implements Initializable {
    private TextField phoneTxt;
    @FXML
    private TextField postalTxt;
+   private static Customer customer = null; 
    
+   /**Used to pass customer object to this screen.*/
    public static void passCustomer(Customer customer){
         UpdateCustomerController.customer = customer;
     }
+   
     /**
-     * Initializes the controller class.
+     * Initializes the controller class, and sets Customer object to UI.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -63,6 +62,8 @@ public class UpdateCustomerController implements Initializable {
         countryCb.getSelectionModel().select(customer.getCustomerCountryId());
         divisionCb.getSelectionModel().select(customer.getCustomerDivision());
     } 
+    
+    /**Used to filter Divisions by Country.*/
     @FXML
     private void countryClicked() throws SQLException{
         divisionCb.getItems().clear();
@@ -74,6 +75,8 @@ public class UpdateCustomerController implements Initializable {
             divisionCb.getItems().addAll(localDatabase.returnDivisions(3));
         }
     }
+    
+    /**Updates Customer object, and updates Customer in database.*/
     @FXML
     private void save(javafx.event.ActionEvent event) throws IOException, SQLException{
            String id = customer.getCustomerId();
@@ -90,6 +93,8 @@ public class UpdateCustomerController implements Initializable {
            stage.setScene(scene);
            stage.show();
     }
+    
+    /**To Customer Page*/
     @FXML
     private void cancel(javafx.event.ActionEvent event) throws IOException{
            Parent root = FXMLLoader.load(getClass().getResource("/view/CustomerPage.fxml"));

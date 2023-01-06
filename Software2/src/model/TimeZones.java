@@ -4,19 +4,13 @@
  */
 package model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import static java.util.Locale.US;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
 /**
- *
- * @author LabUser
+Class TimeZones used to convert times to Local,UTC,EST.
  */
 public class TimeZones {
     

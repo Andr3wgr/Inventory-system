@@ -4,16 +4,10 @@
  */
 package controller;
 
-import java.awt.event.ActionEvent;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.ResourceBundle;
-import java.util.TimeZone;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.fxml.FXML;
@@ -29,9 +23,7 @@ import model.TimeZones;
 import model.localDatabase;
 
 /**
- * FXML Controller class
- *
- * @author LabUser
+This controller is for the choose page, to set Customer_ID Appointment_ID User_ID, and to check if there is an appointment in 15 min.
  */
 public class ChoosePageController implements Initializable {
     private static int custId = 1;
@@ -53,6 +45,7 @@ public class ChoosePageController implements Initializable {
     public static void setCustId(int custId){
         ChoosePageController.custId = custId;
     }
+    
     public static int getUserId() {
         return userId;
     }
@@ -60,6 +53,7 @@ public class ChoosePageController implements Initializable {
     public static void setUserId(int userId) {
         ChoosePageController.userId = userId;
     }
+    
     /**
      * Initializes the controller class.
      */
@@ -84,7 +78,6 @@ public class ChoosePageController implements Initializable {
         } catch (SQLException ex) {
             Logger.getLogger(ChoosePageController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
         try {
             custId = localDatabase.getNextId();
             apptId = localDatabase.getApptId();
@@ -93,16 +86,17 @@ public class ChoosePageController implements Initializable {
         }
     }    
     
-      @FXML
+    /**To Appointments Page.*/
+    @FXML
     public void toAppointmentList(javafx.event.ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/view/AppointmentPage.fxml"));
         Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
-        stage.show();
-        
+        stage.show();   
     }
 
+    /**To Customer Page*/
     @FXML
     public void toCustomerList(javafx.event.ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("/view/CustomerPage.fxml"));
@@ -110,7 +104,5 @@ public class ChoosePageController implements Initializable {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
-    }
-
-    
+    }  
 }

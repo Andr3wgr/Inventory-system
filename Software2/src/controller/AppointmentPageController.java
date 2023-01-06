@@ -7,15 +7,16 @@ package controller;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
@@ -28,25 +29,18 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Appointment;
-import model.Customer;
-
 import model.localDatabase;
-import static model.localDatabase.openConnection;
 
 /**
- * FXML Controller class
- *
- * @author LabUser
+This controller is for the Appointment Page.
  */
 public class AppointmentPageController implements Initializable {
-
     @FXML
     private TableColumn<Appointment, String> appointmentContact;
     @FXML
@@ -79,22 +73,24 @@ public class AppointmentPageController implements Initializable {
     private ToggleGroup filter;
     @FXML
     private ComboBox<String> contactsCb;
+    
+    /**Initializes page and calls update table.*/
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        
+    public void initialize(URL url, ResourceBundle rb) {     
         try {
             Appointment.clear();
             localDatabase.openConnection();
             localDatabase.populateAppointmentTable("SELECT appointments.*, contacts.Contact_Name from client_schedule.appointments \n" +
                 "inner join contacts on appointments.Contact_ID = contacts.Contact_ID;");
-                      localDatabase.closeConnection();
+            localDatabase.closeConnection();
             updateAppointmentTable();
-            contactsCb.getItems().addAll(localDatabase.getContactNames());
-            
+            contactsCb.getItems().addAll(localDatabase.getContactNames());            
         }catch (SQLException ex) {
              Logger.getLogger(CustomerPageController.class.getName()).log(Level.SEVERE, null, ex);
-                }
+         }
     }  
+    
+    /**Updates Appointment table.*/
     public void updateAppointmentTable(){
             appointmentsTableView.setItems(Appointment.getAppointments());
             appointmentId.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
@@ -108,14 +104,17 @@ public class AppointmentPageController implements Initializable {
             customerId.setCellValueFactory(new PropertyValueFactory<>("customerId"));
             userId.setCellValueFactory(new PropertyValueFactory<>("userId"));
     }
+    
+    /**Displays customer page.*/
     public void toCustomerPage(javafx.event.ActionEvent event) throws IOException {
        Parent root = FXMLLoader.load(getClass().getResource("/view/CustomerPage.fxml"));
        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
        Scene scene = new Scene(root);
        stage.setScene(scene);
        stage.show();
-
     }
+    
+    /**Displays add appointment page.*/
     @FXML
     void addAppointment(javafx.event.ActionEvent event) throws IOException {
        Parent root = FXMLLoader.load(getClass().getResource("/view/AddAppointment.fxml"));
@@ -125,6 +124,7 @@ public class AppointmentPageController implements Initializable {
        stage.show();
     }
     
+    /**Displays update appointment page.*/
     @FXML
     void updateAppointment(javafx.event.ActionEvent event) throws IOException {
         Appointment update = appointmentsTableView.getSelectionModel().getSelectedItem();
@@ -141,9 +141,9 @@ public class AppointmentPageController implements Initializable {
             stage.setScene(scene);
             stage.show();
         }
-
     }
 
+    /**Deletes appointment and calls delete from database.*/
     @FXML
     void delete(javafx.event.ActionEvent event) throws IOException, SQLException {
         Appointment delete = appointmentsTableView.getSelectionModel().getSelectedItem();
@@ -152,8 +152,7 @@ public class AppointmentPageController implements Initializable {
                 alert.setTitle("ERROR");
                 alert.setContentText("No Appointment Selected");
                 alert.showAndWait();
-        }
-        
+        }       
         if (delete != null){
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION,"Are You sure You want to Cancel this Appointment?");
                 Optional<ButtonType> result = alert.showAndWait();
@@ -163,15 +162,16 @@ public class AppointmentPageController implements Initializable {
                     alert2.show();
                     localDatabase.deleteAppointmnet(delete);    
                 }
-                
-       Parent root = FXMLLoader.load(getClass().getResource("/view/AppointmentPage.fxml"));
-       Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-       Scene scene = new Scene(root);
-       stage.setScene(scene);
-       stage.show();    
+                Parent root = FXMLLoader.load(getClass().getResource("/view/AppointmentPage.fxml"));
+                Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+                Scene scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();    
        }
     }
-    /**This Method is to filter the Appointments and display Appointments in the next week and month. It is also a Lambda Expression*/
+    
+    /**This Method is to filter the Appointments and display Appointments in the next week and month and is a Lambda Expression. 
+     * Filtering lists is much more concise when using a lambda function.*/
     @FXML
     public void Filter(){
         FilteredList<Appointment>appointmentsfilter = new FilteredList<>(Appointment.getAppointments(), i->true);
@@ -190,23 +190,55 @@ public class AppointmentPageController implements Initializable {
                 }
             }
             return false;
-
         } );
         SortedList<Appointment> sortedData = new SortedList<>(appointmentsfilter);
         sortedData.comparatorProperty().bind(appointmentsTableView.comparatorProperty());
         appointmentsTableView.setItems(sortedData);
     }
+    
+    /**Displays filtered list by contacts.*/
     @FXML
     public void filterByContacts(javafx.event.ActionEvent event) throws SQLException, IOException{
-       
-        
        ContactsFilterController.setCompare(contactsCb.getValue());
-       
+  
        Parent root = FXMLLoader.load(getClass().getResource("/view/ContactsFilter.fxml"));
        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
        Scene scene = new Scene(root);
        stage.setScene(scene);
        stage.show();   
-
+    }
+    
+    /**Displays total appointments by month in an information alert.*/
+    @FXML
+    void totalMonth(javafx.event.ActionEvent event) throws IOException, SQLException {
+        List<String> month = new ArrayList<String>();
+        for(Appointment appointment: Appointment.getAppointments()){
+            month.add(String.valueOf(appointment.getStartDateandTime().getMonth()));
+        }
+        Map<String, Integer> map= new HashMap<String, Integer>();
+        for(String s: month){
+            map.put(s,Collections.frequency(month,s));
+        }
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Total by month");
+        alert.setContentText(map.toString());
+        alert.showAndWait();     
+    }
+    
+    /**Displays total appointments by type in an information alert.*/
+    @FXML
+    void totalType(javafx.event.ActionEvent event) throws IOException, SQLException {
+        List<String> type = new ArrayList<String>();
+        for(Appointment appointment: Appointment.getAppointments()){
+            type.add(appointment.getType());
+        }      
+        Map<String, Integer> map= new HashMap<String, Integer>();
+        for(String s: type){
+            map.put(s,Collections.frequency(type,s));
+        }
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Total by Type");
+        alert.setContentText(map.toString());
+        alert.showAndWait();     
     }
 }

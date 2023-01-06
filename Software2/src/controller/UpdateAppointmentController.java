@@ -30,9 +30,7 @@ import model.TimeZones;
 import model.localDatabase;
 
 /**
- * FXML Controller class
- *
- * @author LabUser
+This controller is used to Update appointments.
  */
 public class UpdateAppointmentController implements Initializable {
     @FXML
@@ -59,11 +57,13 @@ public class UpdateAppointmentController implements Initializable {
     private Label userIdLb;
     private static Appointment appointment = null; 
     
+    /**Used to pass Appointment object to screen.*/
     public static void passAppointment(Appointment appointment){
         UpdateAppointmentController.appointment = appointment;
     }
+    
     /**
-     * Initializes the controller class.
+     * Initializes the controller class, and sets Appointment field to UI.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -77,20 +77,19 @@ public class UpdateAppointmentController implements Initializable {
         contactCb.getSelectionModel().select(appointment.getContact());
         Date.setValue(appointment.getStartDateandTime().toLocalDate());
         startTime.getSelectionModel().select(appointment.getStartDateandTime().toLocalTime().toString());
-        endTime.getSelectionModel().select(appointment.getEndDateandTime().toLocalTime().toString());
-        
-        
-         try {
+        endTime.getSelectionModel().select(appointment.getEndDateandTime().toLocalTime().toString()); 
+        try {
             custIdCb.getItems().addAll(localDatabase.getCustomerIds());
             contactCb.getItems().addAll(localDatabase.getContactNames());
             startTime.getItems().addAll(TimeZones.estToLocal());
             endTime.getItems().addAll(TimeZones.estToLocal());
-        } catch (SQLException ex) {
+        }catch (SQLException ex) {
             Logger.getLogger(AddAppointmentController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        // TODO
     }    
-        @FXML
+    
+    /**Updates Appointment object, and appointment in database.*/
+    @FXML
     private void save(javafx.event.ActionEvent event) throws IOException, SQLException{
         boolean checkOverlap = false;
         String userId =userIdLb.getText();
@@ -105,29 +104,31 @@ public class UpdateAppointmentController implements Initializable {
         LocalTime end = LocalTime.parse(endTime.getValue());
         LocalDateTime startDateTime = LocalDateTime.of(date,start);
         LocalDateTime endDateTime = LocalDateTime.of(date,end);
+        /**checks if start is after end time.*/
         if(startDateTime.isAfter(endDateTime)||startDateTime.isEqual(endDateTime)){
              Alert alert1 = new Alert(Alert.AlertType.ERROR);
              alert1.setTitle("ERROR");
              alert1.setContentText("Start Time Must be Before End Time");
              alert1.showAndWait(); 
              return;
-            }
-        
-        if(checkOverlap = Appointment.checkOverlap(startDateTime,endDateTime,apptId)){
-        
+            } 
+        /**Checks if appointment overlaps with existing appointment.*/
+        if(checkOverlap = Appointment.checkOverlap(startDateTime,endDateTime,apptId)){       
            localDatabase.updateAppointment(userId,apptId,title,desc,location,custId,contact,startDateTime,endDateTime);
            Parent root = FXMLLoader.load(getClass().getResource("/view/AppointmentPage.fxml"));
            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
            Scene scene = new Scene(root);
            stage.setScene(scene);
            stage.show();
-        } else if(checkOverlap == false){
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("ERROR");
-                alert.setContentText("Cannot Schedule Overlapping Appointments");
-                alert.showAndWait();
-           }
+        }else if(checkOverlap == false){
+           Alert alert = new Alert(Alert.AlertType.ERROR);
+           alert.setTitle("ERROR");
+           alert.setContentText("Cannot Schedule Overlapping Appointments");
+           alert.showAndWait();
+        }
     }
+    
+    /**To Appointment Page.*/
     @FXML
     private void cancel(javafx.event.ActionEvent event) throws IOException{
            Parent root = FXMLLoader.load(getClass().getResource("/view/AppointmentPage.fxml"));

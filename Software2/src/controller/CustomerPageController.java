@@ -154,8 +154,8 @@ public class CustomerPageController implements Initializable {
                 alert.showAndWait();
                 return;
         }
-        //pass customer id
-        Parent root = FXMLLoader.load(getClass().getResource("/view/SortbyCustomer.fxml"));
+        AppointmentbyCustomerController.setCustId(view.getCustomerId());
+        Parent root = FXMLLoader.load(getClass().getResource("/view/AppointmentbyCustomer.fxml"));
         Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);

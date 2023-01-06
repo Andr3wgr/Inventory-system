@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.TableColumn?>
@@ -61,14 +62,15 @@
                   </HBox>
                   <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="35.0">
                      <children>
-                        <Label alignment="BOTTOM_LEFT" prefHeight="38.0" prefWidth="583.0" text="Appointments">
+                        <Label alignment="BOTTOM_LEFT" prefHeight="31.0" prefWidth="399.0" text="Appointments">
                            <font>
                               <Font size="18.0" />
                            </font>
                            <padding>
-                              <Insets right="300.0" />
+                              <Insets right="275.0" />
                            </padding>
                         </Label>
+                        <ComboBox fx:id="contactsCb" onAction="#filterByContacts" prefWidth="150.0" promptText="Filter By Contacts" />
                         <RadioButton fx:id="allRb" mnemonicParsing="false" onAction="#Filter" selected="true" text="All Appointments">
                            <toggleGroup>
                               <ToggleGroup fx:id="filter" />

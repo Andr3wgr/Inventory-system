@@ -8,6 +8,7 @@ import controller.ChoosePageController;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -271,5 +272,22 @@ public class localDatabase {
         closeConnection();
         return null;
     }
+
+    public static void updateAppointment(String userId, String apptId, String title, String desc, String location, String custId, String contact, LocalDateTime start, LocalDateTime end) throws SQLException {
+        openConnection();
+        Statement getcontactId = database.createStatement();
+        ResultSet contactId = getcontactId.executeQuery("SELECT Contact_ID FROM client_schedule.contacts where Contact_Name = '"+contact+"'");
+        int contactInt = 0;
+        while(contactId.next()){
+            contactInt = Integer.parseInt(contactId.getString("Contact_ID"));
+        }
+        start = TimeZones.localToUtc(start);
+        end = TimeZones.localToUtc(end);
+        Statement update = database.createStatement();
+        update.executeUpdate("update client_schedule.appointments set User_ID ='"+userId+"',Contact_ID ='"+contactInt+"',Description = '"+desc+"',Title = '"+title+"'"+","
+                + "Location ='"+location+"',Customer_ID = '"+custId+"',Start = '"+start+"',End = '"+end+"' where Appointment_ID ='"+apptId+"'");
+        closeConnection();
+    }
+
     
 }

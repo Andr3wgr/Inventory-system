@@ -128,5 +128,20 @@ public class Appointment {
     public void setUserId(String userId) {
         this.userId = userId;
     }
-     
+    
+    public static boolean checkOverlap(LocalDateTime startDateandTime, LocalDateTime endDateandTime,String ApptId) {
+        for(Appointment appointment: Appointment.getAppointments()){
+            if(ApptId==appointment.getAppointmentId()){
+                continue;
+            }
+            LocalDateTime a=appointment.getStartDateandTime();
+            LocalDateTime b=appointment.getEndDateandTime();
+            if((a.isBefore(startDateandTime)||a.isEqual(startDateandTime))&&(b.isAfter(startDateandTime))){
+                return false;
+            }else if(startDateandTime.isBefore(a)&&endDateandTime.isAfter(a)){
+                return false;    
+            }
+        }
+        return true;
+    }
 }

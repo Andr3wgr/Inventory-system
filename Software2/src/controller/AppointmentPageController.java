@@ -15,7 +15,9 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -24,6 +26,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -35,6 +38,7 @@ import model.Appointment;
 import model.Customer;
 
 import model.localDatabase;
+import static model.localDatabase.openConnection;
 
 /**
  * FXML Controller class
@@ -73,7 +77,8 @@ public class AppointmentPageController implements Initializable {
     private RadioButton monthRb;
     @FXML
     private ToggleGroup filter;
-    
+    @FXML
+    private ComboBox<String> contactsCb;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         
@@ -82,7 +87,15 @@ public class AppointmentPageController implements Initializable {
             localDatabase.openConnection();
             localDatabase.populateAppointmentTable("SELECT appointments.*, contacts.Contact_Name from client_schedule.appointments \n" +
                 "inner join contacts on appointments.Contact_ID = contacts.Contact_ID;");
+                      localDatabase.closeConnection();
+            updateAppointmentTable();
+            contactsCb.getItems().addAll(localDatabase.getContactNames());
             
+        }catch (SQLException ex) {
+             Logger.getLogger(CustomerPageController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+    }  
+    public void updateAppointmentTable(){
             appointmentsTableView.setItems(Appointment.getAppointments());
             appointmentId.setCellValueFactory(new PropertyValueFactory<>("appointmentId"));
             appointmentTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -90,25 +103,11 @@ public class AppointmentPageController implements Initializable {
             appointmentLocation.setCellValueFactory(new PropertyValueFactory<>("location"));
             appointmentContact.setCellValueFactory(new PropertyValueFactory<>("contact"));
             appointmentType.setCellValueFactory(new PropertyValueFactory<>("type"));
-            
-            
-            
             startDate.setCellValueFactory(new PropertyValueFactory<>("startDateandTime"));         
             endDate.setCellValueFactory(new PropertyValueFactory<>("endDateandTime"));
-            
-            
             customerId.setCellValueFactory(new PropertyValueFactory<>("customerId"));
             userId.setCellValueFactory(new PropertyValueFactory<>("userId"));
-            localDatabase.closeConnection();
-            
-            appointmentId.setSortType(TableColumn.SortType.ASCENDING);
-            appointmentsTableView.getSortOrder().add(appointmentId);
-            appointmentsTableView.sort();
-            
-        }catch (SQLException ex) {
-             Logger.getLogger(CustomerPageController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-    }    
+    }
     public void toCustomerPage(javafx.event.ActionEvent event) throws IOException {
        Parent root = FXMLLoader.load(getClass().getResource("/view/CustomerPage.fxml"));
        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -128,11 +127,21 @@ public class AppointmentPageController implements Initializable {
     
     @FXML
     void updateAppointment(javafx.event.ActionEvent event) throws IOException {
-       Parent root = FXMLLoader.load(getClass().getResource("/view/UpdateAppointment.fxml"));
-       Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-       Scene scene = new Scene(root);
-       stage.setScene(scene);
-       stage.show();
+        Appointment update = appointmentsTableView.getSelectionModel().getSelectedItem();
+        if(update == null){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("ERROR");
+                alert.setContentText("No Appointment Selected");
+                alert.showAndWait();
+        }if(update!=null){
+            UpdateAppointmentController.passAppointment(update);
+            Parent root = FXMLLoader.load(getClass().getResource("/view/UpdateAppointment.fxml"));
+            Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+        }
+
     }
 
     @FXML
@@ -162,16 +171,42 @@ public class AppointmentPageController implements Initializable {
        stage.show();    
        }
     }
+    /**This Method is to filter the Appointments and display Appointments in the next week and month. It is also a Lambda Expression*/
     @FXML
     public void Filter(){
+        FilteredList<Appointment>appointmentsfilter = new FilteredList<>(Appointment.getAppointments(), i->true);
+        appointmentsfilter.setPredicate(appointment->{
+            if(allRb.isSelected()){
+                return true;
+            }else if(weekRb.isSelected()){
+                if(appointment.getStartDateandTime().isBefore(LocalDateTime.now().plusWeeks(1))
+                        &&appointment.getStartDateandTime().isAfter(LocalDateTime.now())){
+                    return true;
+                }
+            }else if(monthRb.isSelected()){
+                if(appointment.getStartDateandTime().isBefore(LocalDateTime.now().plusMonths(1))
+                        &&appointment.getStartDateandTime().isAfter(LocalDateTime.now())){
+                    return true;
+                }
+            }
+            return false;
+
+        } );
+        SortedList<Appointment> sortedData = new SortedList<>(appointmentsfilter);
+        sortedData.comparatorProperty().bind(appointmentsTableView.comparatorProperty());
+        appointmentsTableView.setItems(sortedData);
+    }
+    @FXML
+    public void filterByContacts(javafx.event.ActionEvent event) throws SQLException, IOException{
+       
         
-        if(allRb.isSelected()){
-            
-        }else if(weekRb.isSelected()){
-            
-        }else if(monthRb.isSelected()){
-            
-        }
-    
-     }
+       ContactsFilterController.setCompare(contactsCb.getValue());
+       
+       Parent root = FXMLLoader.load(getClass().getResource("/view/ContactsFilter.fxml"));
+       Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+       Scene scene = new Scene(root);
+       stage.setScene(scene);
+       stage.show();   
+
+    }
 }

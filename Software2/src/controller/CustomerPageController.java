@@ -119,6 +119,7 @@ public class CustomerPageController implements Initializable {
                 alert.setTitle("ERROR");
                 alert.setContentText("No Customer Selected");
                 alert.showAndWait();
+                
         }
         boolean del= localDatabase.checkDelete(Integer.parseInt(delete.getCustomerId()));
         if (delete != null && del==true){
@@ -138,6 +139,23 @@ public class CustomerPageController implements Initializable {
         
         
         Parent root = FXMLLoader.load(getClass().getResource("/view/CustomerPage.fxml"));
+        Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        Scene scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+    
+    public void viewAppointments(javafx.event.ActionEvent event) throws SQLException, IOException{
+        Customer view = customerTableView.getSelectionModel().getSelectedItem();
+        if(view == null){
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("ERROR");
+                alert.setContentText("No Customer Selected");
+                alert.showAndWait();
+                return;
+        }
+        //pass customer id
+        Parent root = FXMLLoader.load(getClass().getResource("/view/SortbyCustomer.fxml"));
         Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         Scene scene = new Scene(root);
         stage.setScene(scene);
